@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_brs_core" default="compile.module.brs_core">
+  <dirname property="module.brs_core.basedir" file="${ant.file.module_brs_core}"/>
+  
+  <property name="module.jdk.home.brs_core" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.brs_core" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.brs_core" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.brs_core" value="-encoding UTF-8 -source 1.6 -target 1.6 ${compiler.args}"/>
+  
+  <property name="brs_core.output.dir" value="${module.brs_core.basedir}/../../brs_desktop/out/production/brs_core"/>
+  <property name="brs_core.testoutput.dir" value="${module.brs_core.basedir}/../../brs_desktop/out/test/brs_core"/>
+  
+  <path id="brs_core.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="brs_core.module.production.classpath">
+    <path refid="${module.jdk.classpath.brs_core}"/>
+    <path refid="library.brs_libs.classpath"/>
+  </path>
+  
+  <path id="brs_core.runtime.production.module.classpath">
+    <pathelement location="${brs_core.output.dir}"/>
+    <path refid="library.brs_libs.classpath"/>
+  </path>
+  
+  <path id="brs_core.module.classpath">
+    <path refid="${module.jdk.classpath.brs_core}"/>
+    <pathelement location="${brs_core.output.dir}"/>
+    <path refid="library.brs_libs.classpath"/>
+  </path>
+  
+  <path id="brs_core.runtime.module.classpath">
+    <pathelement location="${brs_core.testoutput.dir}"/>
+    <pathelement location="${brs_core.output.dir}"/>
+    <path refid="library.brs_libs.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.brs_core">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.brs_core">
+    <patternset refid="excluded.from.module.brs_core"/>
+  </patternset>
+  
+  <path id="brs_core.module.sourcepath">
+    <dirset dir="${module.brs_core.basedir}/../../brs_core">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.brs_core" depends="compile.module.brs_core.production,compile.module.brs_core.tests" description="Compile module brs_core"/>
+  
+  <target name="compile.module.brs_core.production" depends="register.custom.compilers" description="Compile module brs_core; production classes">
+    <mkdir dir="${brs_core.output.dir}"/>
+    <javac2 destdir="${brs_core.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.brs_core}/javac">
+      <compilerarg line="${compiler.args.brs_core}"/>
+      <bootclasspath refid="brs_core.module.bootclasspath"/>
+      <classpath refid="brs_core.module.production.classpath"/>
+      <src refid="brs_core.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.brs_core"/>
+    </javac2>
+    
+    <copy todir="${brs_core.output.dir}">
+      <fileset dir="${module.brs_core.basedir}">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.brs_core.tests" depends="register.custom.compilers,compile.module.brs_core.production" description="compile module brs_core; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.brs_core" description="cleanup module">
+    <delete dir="${brs_core.output.dir}"/>
+    <delete dir="${brs_core.testoutput.dir}"/>
+  </target>
+</project>
